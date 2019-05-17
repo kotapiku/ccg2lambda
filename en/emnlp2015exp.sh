@@ -85,8 +85,7 @@ python en/extract_entailment_problems.py $dataset $plain_dir
 # Tokenize text.
 for f in ${plain_dir}/*.txt; do
   if [ ! -e "${f/.txt/.tok}" ]; then
-    # cat $f | \
-    python concat_word.py $sentences_fname | \
+    python concat_word.py $f | \
     perl en/tokenizer.perl -l en 2>/dev/null | \
     sed 's/ _ /_/g' > ${f/.txt/.tok}
   fi

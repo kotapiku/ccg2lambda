@@ -74,7 +74,6 @@ results_dir="en_results" # HTML semantic outputs, proving results, etc.
 mkdir -p $plain_dir $parsed_dir $results_dir
 
 # Tokenize text with Penn Treebank tokenizer.
-# cat $sentences_fname | \
 python concat_word.py $sentences_fname | \
   sed -f en/tokenizer.sed | \
   sed 's/ _ /_/g' | \
