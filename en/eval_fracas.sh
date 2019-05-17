@@ -4,15 +4,15 @@
 #
 # Usage:
 #  ./en/eval_fracas.sh <list of section numbers> <templates>
-# 
+#
 # Example:
 # ./en/eval_fracas.sh 1 2 5 6 8 9
 #
 
 # Set the name of semantic templates
-templates="en/semantic_templates_en_event.yaml"
+templates="en/semantic_templates_en_emnlp2015.yaml"
 
-plain_dir="en_plain"
+plain_dir="fracas.xml_plain"
 results_dir="en_results"
 
 if [ ! -e $results_dir ]; then
@@ -20,7 +20,7 @@ if [ ! -e $results_dir ]; then
 fi
 
 # Set a coq library file
-cp en/coqlib_univ.v coqlib.v
+cp en/coqlib_fracas.v coqlib.v
 coqc coqlib.v
 cp en/tactics_coq_fracas.txt tactics_coq.txt
 
@@ -68,7 +68,7 @@ function display() {
     echo '<tr>
     <td>'${base_filename/.answer/}'</td>
     <td>'$gold_answer'</td>' >> $results_dir/main.html
-    for parser in "" "candc." "easyccg." "depccg."; do 
+    for parser in "" "candc." "easyccg." "depccg."; do
       if [ -e ${results_dir}/${base_filename/.answer/.txt}.${parser}answer ]; then
         system_answer=`cat ${results_dir}/${base_filename/.answer/.txt}.${parser}answer`
       else

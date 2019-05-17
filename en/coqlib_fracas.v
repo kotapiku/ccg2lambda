@@ -5,6 +5,7 @@ Parameter Prog : Prop -> Prop.
 Parameter two : Entity -> Prop.
 Parameter Top : Entity -> Entity.
 Parameter Most : (Entity -> Prop) -> (Entity -> Prop) -> Prop.
+Parameter At_Most : (Entity -> Prop) -> (Entity -> Prop) -> Prop.
 
 (* Notation and axioms for proportional determiners *)
 Notation "'most' x ; P , Q" := (Most (fun x => P) (fun x => Q))
@@ -24,6 +25,34 @@ Axiom most_rightup :
    (forall x, G x -> H x) -> (Most F H)).
 
 Hint Resolve most_ex_import most_consv most_rightup.
+
+(* my Ltacs *)
+Parameter _a_lot_of : Entity -> Prop.
+Parameter _many : Entity -> Prop.
+
+Axiom many_alotof : forall x, _many x = _a_lot_of x.
+Axiom alotof_many : forall x, _a_lot_of x = _many x.
+Hint Resolve many_alotof alotof_many.
+
+Ltac many_alotof_eq :=
+  match goal with
+  | [x : Entity, H : _many _ |- _]
+    => try rewrite (many_alotof x) in H
+  | [x : Entity, H : _a_lot_of _ |- _]
+    => try rewrite (alotof_many x) in H
+  end.
+
+
+Axiom at_most :
+  forall (F1 F2 G1 G2 : Entity -> Prop),
+   At_Most F1 G1 -> (forall x, G2 x -> G1 x) -> (forall x, F2 x -> F1 x) -> At_Most F2 G2.
+Hint Resolve at_most.
+
+Ltac at_most_tac :=
+    match goal with
+    | [ H1 : At_Most ?F ?G |- At_Most _ _ ]
+      => try eapply at_most; try (instantiate (1 := G); instantiate (1 := F))
+    end.
 
 (* veridical predicates *)
 Parameter _true : Prop -> Prop.
@@ -153,7 +182,7 @@ Ltac solve_false :=
 Ltac nltac_init :=
   try(intuition;try solve_false;firstorder;subst;firstorder).
 
-Ltac nltac_base := 
+Ltac nltac_base :=
   try(nltac_init);
   try(firstorder;intuition;firstorder;eauto;eexists;firstorder;eauto);
   try(subst;eauto;firstorder);
@@ -166,7 +195,9 @@ Ltac nltac_axiom :=
      solve_implicative_manage |
      solve_implicative_fail |
      solve_factive |
-     solve_privative_former
+     solve_privative_former |
+     many_alotof_eq |
+     at_most_tac
     ].
 
 Ltac nltac_eq :=
@@ -185,7 +216,7 @@ Ltac solve_gq :=
   match goal with
     H : Most _ _ |- _
     => let H0 := fresh in
-       try solve [         
+       try solve [
           pose (H0 := H); eapply most_ex_import in H0;
             try nltac_ent; try nltac_eq |
           pose (H0 := H); eapply most_consv in H0;

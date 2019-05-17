@@ -21,9 +21,9 @@
 # 'yes' (the premises entail the conclusion), 'no' (there is a contradiction) or
 # 'unknown' (none of the former).
 # You can use it as:
-# 
+#
 # ./rte_en_mp_any.sh <sentences.txt> <semantic_templates.yaml> <nbest>
-# 
+#
 # E.g.
 # ./rte_en_mp_any.sh en/sample_en.txt en/semantic_templates_en.yaml 3
 
@@ -74,7 +74,8 @@ results_dir="en_results" # HTML semantic outputs, proving results, etc.
 mkdir -p $plain_dir $parsed_dir $results_dir
 
 # Tokenize text with Penn Treebank tokenizer.
-cat $sentences_fname | \
+# cat $sentences_fname | \
+python concat_word.py $sentences_fname | \
   sed -f en/tokenizer.sed | \
   sed 's/ _ /_/g' | \
   sed 's/[[:space:]]*$//' \
@@ -127,6 +128,7 @@ function parse_candc() {
       --input ${plain_dir}/${base_fname}.tok \
     2> ${parsed_dir}/${base_fname}.log \
      > ${parsed_dir}/${base_fname}.candc.xml
+  # ここに入れる
   python en/candc2transccg.py ${parsed_dir}/${base_fname}.candc.xml \
     > ${parsed_dir}/${base_fname}.candc.jigg.xml \
     2> ${parsed_dir}/${base_fname}.log
@@ -165,6 +167,7 @@ function parse_easyccg() {
     --nbest "${nbest}" \
     > ${parsed_dir}/${base_fname}.easyccg \
     2> ${parsed_dir}/${base_fname}.easyccg.log
+  sed -i '' 's/-/_/g' ${parsed_dir}/${base_fname}.easyccg
   python en/easyccg2jigg.py \
     ${parsed_dir}/${base_fname}.easyccg \
     ${parsed_dir}/${base_fname}.easyccg.jigg.xml \
@@ -303,10 +306,10 @@ for parser in `cat en/parser_location.txt`; do
   fi
   if [ ! -e ${parsed_dir}/${sentences_basename}.${parser_name}.sem.xml ]; then
     echo "semantic parsing $parsed_dir/${sentences_basename}.${parser_name}.sem.xml"
-    semantic_parsing $parser_name $sentences_basename 
+    semantic_parsing $parser_name $sentences_basename
   fi
   if [ ! -e ${results_dir}/${sentences_basename}.${parser_name}.answer ]; then
-    proving $parser_name $sentences_basename 
+    proving $parser_name $sentences_basename
     select_answer ${parser_name}
   fi
   if [ ! -e ${results_dir}/${sentences_basename}.${parser_name}.answer ]; then

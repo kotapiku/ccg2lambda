@@ -283,7 +283,7 @@
 
 ##### Adverbs #####
 
-- category: (N/N)/(N/N) 
+- category: (N/N)/(N/N)
   semantics: \E A F x. (E(x) & A(F)(x))
   coq_type: Entity -> Prop
 
@@ -467,7 +467,7 @@
 
 ##### Negation #####
 
-- category: (S\NP)\(S\NP) 
+- category: (S\NP)\(S\NP)
   semantics: \E V Q. Q(\w.TrueP, \x.-V(\F1 F2.F2(x)))
   surf: not
 
@@ -475,7 +475,7 @@
   semantics: \E V Q. Q(\w.TrueP, \x.-V(\F1 F2.F2(x)))
   surf: not
 
-- category: (S\NP)\(S\NP) 
+- category: (S\NP)\(S\NP)
   semantics: \E V Q. Q(\w.TrueP, \x.-V(\F1 F2.F2(x)))
   surf: never
 
@@ -648,3 +648,16 @@
   surf: ","
 
 
+##### My semantics #####
+- category: (N/N)/(N/N)
+  semantics: \E A F x. At_Most(A(F)(x))
+  base: at_most
+
+- category: N/N
+  semantics: \E F1 F2 F3. At_Most(\x.(F1(x) & F2(x)), F3)
+  base: at_most
+
+- category: NP
+  rule: lex
+  semantics: \C. C
+  child_any_base: at_most

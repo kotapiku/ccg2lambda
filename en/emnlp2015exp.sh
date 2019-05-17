@@ -17,9 +17,9 @@
 # This script evaluates a list of templates that assign semantics
 # to nodes of CCG derivations of fracas premises and hypotheses.
 # Please, use it as:
-# 
+#
 # ./en/emnlp2015exp.sh <semantic_template.yaml> <dataset>
-# 
+#
 # E.g.
 # ./en/emnlp2015exp.sh en/semantic_templates_en_emnlp2015.yaml fracas.xml
 #
@@ -85,7 +85,8 @@ python en/extract_entailment_problems.py $dataset $plain_dir
 # Tokenize text.
 for f in ${plain_dir}/*.txt; do
   if [ ! -e "${f/.txt/.tok}" ]; then
-    cat $f | \
+    # cat $f | \
+    python concat_word.py $sentences_fname | \
     perl en/tokenizer.perl -l en 2>/dev/null | \
     sed 's/ _ /_/g' > ${f/.txt/.tok}
   fi
